@@ -1,0 +1,24 @@
+{
+  "license": "Apache License, Version 2.0",
+  "source": "NA",
+  "types": [
+
+  ],
+  "description": "Custom Fact for the host interface on a machine. \nIt finds the interface based on the gateway of netstat -rn. i\nWorks on FreeBSD, RedHat, Ubuntu and probably others.",
+  "version": "2.0.0",
+  "checksums": {
+    "lib/facter/hostint.rb": "4c2f145b3be82b0ba01e9cf6e555c10a",
+    "manifests/init.pp": "944c261f16389ca8cb2b84b1b07c3258",
+    "tests/init.pp": "fe7a3b96f7101e6e492487ee31642b9b",
+    "spec/spec_helper.rb": "a55d1e6483344f8ec6963fcb2c220372",
+    "README": "89c9af23216bbfcb2f5c7c7c3da451bd",
+    "Modulefile": "99bb37d45656b92463dd20b9bc2c9e7d"
+  },
+  "project_page": "http://www.thunderpoop.com",
+  "summary": "Host Interface Fact",
+  "name": "panaman-hostint",
+  "author": "Panaman",
+  "dependencies": [
+
+  ]
+}
