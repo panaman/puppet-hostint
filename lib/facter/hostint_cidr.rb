@@ -2,73 +2,74 @@ Facter.add(:hostint_ipv4_cidr) do
   confine :kernel => %w{Linux Darwin FreeBSD}
   int=Facter.value('hostint')
   setcode do
+    network = Facter.value("network_#{int}")
     mask = Facter.value("netmask_#{int}")
     if mask == '255.255.255.255'
-      '32'
+      "#{network}/32"
     elsif mask == '255.255.255.254'
-      '31'
+      "#{network}/31"
     elsif mask == '255.255.255.252'
-      '30'
+      "#{network}/30"
     elsif mask == '255.255.255.248'
-      '29'
+      "#{network}/29"
     elsif mask == '255.255.255.240'
-      '28'
+      "#{network}/28"
     elsif mask == '255.255.255.224'
-      '27'
+      "#{network}/27"
     elsif mask == '255.255.255.192'
-      '26'
+      "#{network}/26"
     elsif mask == '255.255.255.128'
-      '25'
+      "#{network}/25"
     elsif mask == '255.255.255.0'
-      '24'
+      "#{network}/24"
     elsif mask == '255.255.254.0'
-      '23'
+      "#{network}/23"
     elsif mask == '255.255.252.0'
-      '22'
+      "#{network}/22"
     elsif mask == '255.255.248.0'
-      '21'
+      "#{network}/21"
     elsif mask == '255.255.240.0'
-      '20'
+      "#{network}/20"
     elsif mask == '255.255.224.0'
-      '19'
+      "#{network}/19"
     elsif mask == '255.255.192.0'
-      '18'
+      "#{network}/18"
     elsif mask == '255.255.128.0'
-      '17'
+      "#{network}/17"
     elsif mask == '255.255.0.0'
-      '16'
+      "#{network}/16"
     elsif mask == '255.254.0.0'
-      '15'
+      "#{network}/15"
     elsif mask == '255.252.0.0'
-      '14'
+      "#{network}/14"
     elsif mask == '255.248.0.0'
-      '13'
+      "#{network}/13"
     elsif mask == '255.240.0.0'
-      '12'
+      "#{network}/12"
     elsif mask == '255.224.0.0'
-      '11'
+      "#{network}/11"
     elsif mask == '255.192.0.0'
-      '10'
+      "#{network}/10"
     elsif mask == '255.128.0.0'
-      '9'
+      "#{network}/9"
     elsif mask == '255.0.0.0'
-      '8'
+      "#{network}/8"
     elsif mask == '254.0.0.0'
-      '7'
+      "#{network}/7"
     elsif mask == '252.0.0.0'
-      '6'
+      "#{network}/6"
     elsif mask == '248.0.0.0'
-      '5'
+      "#{network}/5"
     elsif mask == '240.0.0.0'
-      '4'
+      "#{network}/4"
     elsif mask == '224.0.0.0'
-      '3'
+      "#{network}/3"
     elsif mask == '192.0.0.0'
-      '2'
+      "#{network}/2"
     elsif mask == '128.0.0.0'
-      '1'
+      "#{network}/1"
     elsif mask == '0.0.0.0'
-      '0'
+      "#{network}/0"
     else 
       nil
     end
