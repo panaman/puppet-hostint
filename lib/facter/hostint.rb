@@ -32,7 +32,7 @@ Facter.add(:hostint_dns) do
   setcode do
     if File.exists? "/usr/bin/nmcli"
       int  = Facter.value('hostint')
-      tool = Facter::Util::Resolution.exec("/usr/bin/nmcli dev list iface #{int}").split(/\n/)
+      tool = Facter::Util::Resolution.exec("/usr/bin/nmcli device show #{int}").split(/\n/)
       dns  = tool.select { |name| name[/IP4.DNS[1]:/i] }
       val  = dpx.join.strip.gsub('IP4.DNS[1]:', '')
       if val.nil? || val.empty?
