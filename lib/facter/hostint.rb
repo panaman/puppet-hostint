@@ -29,12 +29,12 @@ end
 
 Facter.add(:hostint_dns) do
   confine :kernel => %w{Linux Darwin FreeBSD}
-  int=Facter.value('hostint')
   setcode do
     if File.exists? "/usr/bin/nmcli"
-      Facter::Util::Resolution.exec("/usr/bin/nmcli dev list iface #{int}").collect
-      dns = tool.select { |name| name[/IP4.DNS[1]:/i] }
-      val = dpx.join.strip.gsub('IP4.DNS[1]:', '')
+      int  = Facter.value('hostint')
+      tool = Facter::Util::Resolution.exec("/usr/bin/nmcli dev list iface #{int}").split(/\n/)
+      dns  = tool.select { |name| name[/IP4.DNS[1]:/i] }
+      val  = dpx.join.strip.gsub('IP4.DNS[1]:', '')
       if val.nil? || val.empty?
         nil
       else
@@ -52,10 +52,10 @@ Facter.add(:hostint_duplex) do
   confine :kernel => 'Linux'
   setcode do
     if File.exist? "/sbin/ethtool"
-      int = Facter.value('hostint') 
-      tool = Facter::Util::Resolution.exec("ethtool #{int}").collect
-      dpx = tool.select { |name| name[/Duplex/i] }
-      val = dpx.join.strip.gsub('Duplex: ', '')
+      int  = Facter.value('hostint') 
+      tool = Facter::Util::Resolution.exec("ethtool #{int}").split(/\n/)
+      dpx  = tool.select { |name| name[/Duplex/i] }
+      val  = dpx.join.strip.gsub('Duplex: ', '')
       if val.nil? || val.empty?
         'unknown'
       else
@@ -71,10 +71,10 @@ Facter.add(:hostint_speed) do
   confine :kernel => 'Linux'
   setcode do
     if File.exist? "/sbin/ethtool"
-      int = Facter.value('hostint')
-      tool = Facter::Util::Resolution.exec("ethtool #{int}").collect
-      spd = tool.select { |name| name[/Speed/i] }
-      val = spd.join.strip.gsub('Speed: ', '')
+      int  = Facter.value('hostint')
+      tool = Facter::Util::Resolution.exec("ethtool #{int}").split(/\n/)
+      spd  = tool.select { |name| name[/Speed/i] }
+      val  = spd.join.strip.gsub('Speed: ', '')
       if val.nil? || val.empty?
         'unknown'
       else
