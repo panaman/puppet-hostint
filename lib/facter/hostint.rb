@@ -10,7 +10,7 @@ Facter.add(:hostint) do
     end
   elsif ktype == 'Linux'
     setcode do
-      Facter::Util::Resolution.exec("netstat -rn | awk '$1==\"0.0.0.0\" { print $8 }'")
+      Facter::Util::Resolution.exec("ip route | grep default | awk '{print $5}'") 
     end
   elsif ktype == 'windows'
     setcode { 'local_area_connection' }
@@ -21,26 +21,28 @@ end
 
 Facter.add(:hostint_ipv4) do
   confine :kernel => %w{Linux Darwin FreeBSD}
-  int=Facter.value('hostint')
-  setcode do
-    Facter.value("ipaddress_#{int}")
+  if ktype == 'FreeBSD'
+    setcode do
+      int = Facter::Util::Resolution.exec("netstat -f inet -rn | awk '$1==\"default\" { print $6 }'")
+      Facter.value("ipaddress_#{int}")
+    end
+  elsif ktype == 'Darwin'
+    setcode do
+      int = Facter::Util::Resolution.exec("netstat -f inet -rn | awk '$1==\"default\" { print $6 }'")
+      Facter.value("ipaddress_#{int}")
+    end
+  elsif ktype == 'Linux'
+    setcode do
+      int = Facter::Util::Resolution.exec("ip route | grep default | awk '{print $5}'")
+      Facter.value("ipaddress_#{int}")
+    end
   end
 end
 
 Facter.add(:hostint_dns) do
   confine :kernel => %w{Linux Darwin FreeBSD}
-  int=Facter.value('hostint')
   setcode do
-    if File.exists? "/usr/bin/nmcli"
-      Facter::Util::Resolution.exec("/usr/bin/nmcli dev list iface #{int}").collect
-      dns = tool.select { |name| name[/IP4.DNS[1]:/i] }
-      val = dpx.join.strip.gsub('IP4.DNS[1]:', '')
-      if val.nil? || val.empty?
-        nil
-      else
-        "#{val}"
-      end
-    elsif File.exists? "/etc/resolv.conf"
+    if File.exists? "/etc/resolv.conf"
       Facter::Util::Resolution.exec("cat /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -1")
     else 
       nil
@@ -53,9 +55,8 @@ Facter.add(:hostint_duplex) do
   setcode do
     if File.exist? "/sbin/ethtool"
       int = Facter.value('hostint') 
-      tool = Facter::Util::Resolution.exec("ethtool #{int}").collect
-      dpx = tool.select { |name| name[/Duplex/i] }
-      val = dpx.join.strip.gsub('Duplex: ', '')
+      tool = Facter::Util::Resolution.exec("ethtool #{int} | grep Duplex")
+      val = tool.strip.gsub('Duplex: ', '')
       if val.nil? || val.empty?
         'unknown'
       else
@@ -72,9 +73,8 @@ Facter.add(:hostint_speed) do
   setcode do
     if File.exist? "/sbin/ethtool"
       int = Facter.value('hostint')
-      tool = Facter::Util::Resolution.exec("ethtool #{int}").collect
-      spd = tool.select { |name| name[/Speed/i] }
-      val = spd.join.strip.gsub('Speed: ', '')
+      tool = Facter::Util::Resolution.exec("ethtool #{int} | grep Speed")
+      val = tool.strip.gsub('Speed: ', '')
       if val.nil? || val.empty?
         'unknown'
       else
